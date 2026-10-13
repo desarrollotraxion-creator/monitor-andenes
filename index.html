@@ -15,6 +15,7 @@
             --color-ocupada: #d84315;
             --color-retirar: #0288d1;
             --color-servicio: #c62828;
+            --color-deshabilitada: #212121;
             --text-main: #f0f2f5;
             --text-muted: #8c93a8;
         }
@@ -58,6 +59,7 @@
             font-weight: 900;
             letter-spacing: 2px;
             color: #ffffff;
+            text-transform: uppercase;
         }
 
         .logo-sub {
@@ -334,16 +336,20 @@
             font-size: 9.5px;
         }
 
+        /* Estatus de color */
         .status-libre { background-color: var(--color-libre) !important; }
         .status-ocupada { background-color: var(--color-ocupada) !important; }
         .status-retirar { background-color: var(--color-retirar) !important; }
         .status-servicio { background-color: var(--color-servicio) !important; }
+        .status-deshabilitada { background-color: var(--color-deshabilitada) !important; color: #888; }
 
         .card-libre { border-color: rgba(46, 125, 50, 0.5); }
         .card-ocupada { border-color: var(--color-ocupada); }
         .card-retirar { border-color: var(--color-retirar); }
         .card-servicio { border-color: var(--color-servicio); }
+        .card-deshabilitada { border-color: #333333; background-color: #121212; opacity: 0.6; }
 
+        /* Modales */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -528,6 +534,7 @@
                         <option value="OCUPADA">OCUPADA</option>
                         <option value="PARA RETIRAR">PARA RETIRAR</option>
                         <option value="FUERA DE SERVICIO">FUERA DE SERVICIO</option>
+                        <option value="DESHABILITADA">DESHABILITADA</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -551,18 +558,22 @@
                     <input type="text" id="editMontacarguista" class="form-control" placeholder="Nombre del operador">
                 </div>
                 <div class="form-group">
+                    <label># Montacargas</label>
+                    <input type="text" id="editNumeroMontacargas" class="form-control" placeholder="Ej: MC-02">
+                </div>
+                <div class="form-group">
                     <label>Observaciones / Comentarios</label>
                     <input type="text" id="editComentarios" class="form-control" placeholder="Detalles de carga / sellos">
                 </div>
-                <button type="submit" class="btn-submit">GUARDAR CAMBIOS</button>
+                <button type="submit" class="btn-submit">GUARDAR CAMBIOS EN FIREBASE</button>
             </form>
         </div>
     </div>
 
-    <!-- Firebase SDK v10 (Realtime Database) -->
+    <!-- Firebase SDK v10 (Realtime Database configurada por Android Studio) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, set, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB-3LoDsFnCayc1nuri8Kof3l4UIkAsXgc",
@@ -575,7 +586,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const rtdb = getDatabase(app);
+        const db = getDatabase(app);
 
         const BODEGAS = {
             ROJA: { 
@@ -599,7 +610,9 @@
         let currentAndenEdit = null;
         let primeraCarga = true;
         let modoEditorActivo = false;
+        let rtdbRefActual = null;
 
+        // Control de Modo Editor
         window.toggleModoEditor = function() {
             if (modoEditorActivo) {
                 modoEditorActivo = false;
@@ -637,40 +650,45 @@
             primeraCarga = true;
             document.getElementById('tabRoja').classList.toggle('active', clave === 'ROJA');
             document.getElementById('tabNaranja').classList.toggle('active', clave === 'NARANJA');
-            conectarRTDB();
+            conectarRealtimeDB();
         };
 
-        function conectarRTDB() {
-            // En tu Realtime Database los nodos son directos por número: 2, 3, 4... o bajo su bodega
-            const ruta = bodegaActual.clave === 'ROJA' ? '/' : '/NARANJA';
-            const dbRef = ref(rtdb, ruta);
+        function conectarRealtimeDB() {
+            if (rtdbRefActual) {
+                off(rtdbRefActual);
+            }
 
-            onValue(dbRef, (snapshot) => {
-                const dataVal = snapshot.val();
-                if (!dataVal) return;
+            // Ruta de consulta compatible con la app de Android
+            rtdbRefActual = ref(db, `bodegas/${bodegaActual.clave}/andenes`);
 
+            onValue(rtdbRefActual, (snapshot) => {
                 andenesMap.clear();
 
-                Object.keys(dataVal).forEach(key => {
-                    const item = dataVal[key];
-                    if (item && typeof item === 'object') {
-                        const num = parseInt(key) || parseInt(item.numero);
-                        if (!isNaN(num)) {
-                            // Comparar si hubo cambio para el banner
-                            const anterior = andenesMap.get(num);
-                            if (!primeraCarga && anterior && anterior.estado !== item.estado) {
-                                registrarUltimoMovimiento(num, item);
+                if (snapshot.exists()) {
+                    snapshot.forEach(childSnap => {
+                        const data = childSnap.val();
+                        if (data) {
+                            const numKey = childSnap.key;
+                            const num = parseInt(data.numero || data.numeroCelda || numKey);
+
+                            if (!isNaN(num)) {
+                                const anterior = andenesMap.get(num);
+                                if (!primeraCarga && anterior && anterior.estado !== data.estado) {
+                                    registrarUltimoMovimiento(num, data);
+                                }
+                                andenesMap.set(num, data);
                             }
-                            andenesMap.set(num, item);
                         }
-                    }
-                });
+                    });
+                }
 
                 if (primeraCarga) {
                     primeraCarga = false;
                 }
 
                 renderGrid();
+            }, (error) => {
+                console.error("Error Realtime DB:", error);
             });
         }
 
@@ -717,7 +735,7 @@
                 // LADO B
                 const labelB = document.createElement('div');
                 labelB.className = 'section-label';
-                labelB.innerHTML = `LADO B (PAR) • ${bodegaActual.ladoB.length} ANDENES`;
+                labelB.innerHTML = `LADO B (PAR) • ${bodegaActual.ladoB.length} ANDENES OPERATIVOS`;
                 container.appendChild(labelB);
 
                 const gridB = document.createElement('div');
@@ -728,7 +746,7 @@
                 // LADO A
                 const labelA = document.createElement('div');
                 labelA.className = 'section-label';
-                labelA.innerHTML = `LADO A (IMPAR) • ${bodegaActual.ladoA.length} ANDENES`;
+                labelA.innerHTML = `LADO A (IMPAR) • ${bodegaActual.ladoA.length} ANDENES OPERATIVOS`;
                 container.appendChild(labelA);
 
                 const gridA = document.createElement('div');
@@ -746,12 +764,17 @@
                 container.appendChild(grid);
             }
 
+            // Conteo exacto solo sobre los andenes operativos
             listaAndenesActivos.forEach(num => {
                 const data = andenesMap.get(num) || { estado: 'LIBRE' };
                 const st = (data.estado || 'LIBRE').toUpperCase();
-                if (st === 'LIBRE') countLibres++;
-                else if (st === 'FUERA DE SERVICIO') countServicio++;
-                else countOcupados++;
+                if (st === 'LIBRE') {
+                    countLibres++;
+                } else if (st === 'FUERA DE SERVICIO' || st === 'DESHABILITADA' || st === 'DESHABILITADO') {
+                    countServicio++;
+                } else {
+                    countOcupados++;
+                }
             });
 
             document.getElementById('statTotal').innerText = countTotal;
@@ -772,6 +795,13 @@
             };
 
             const estado = (data.estado || "LIBRE").toUpperCase();
+            const esLibre = (estado === "LIBRE");
+
+            const linea = esLibre ? "" : (data.linea || "");
+            const economico = esLibre ? "" : (data.economico || "");
+            const montacarguista = esLibre ? "" : (data.montacarguista || "");
+            const comentarios = esLibre ? "" : (data.comentarios || "");
+            const tipoViaje = esLibre ? "" : (data.tipoViaje || "");
 
             let statusClass = "status-libre";
             let cardClass = "card-libre";
@@ -785,6 +815,9 @@
             } else if (estado === "FUERA DE SERVICIO") {
                 statusClass = "status-servicio";
                 cardClass = "card-servicio";
+            } else if (estado === "DESHABILITADA" || estado === "DESHABILITADO") {
+                statusClass = "status-deshabilitada";
+                cardClass = "card-deshabilitada";
             }
 
             const card = document.createElement('div');
@@ -802,13 +835,13 @@
                     <div class="dock-status-pill ${statusClass}">${estado}</div>
                 </div>
                 <div class="dock-body">
-                    ${data.linea ? `<div class="dock-linea" title="${data.linea}">🚛 ${data.linea}</div>` : ''}
-                    ${data.economico ? `<div class="dock-eco">🆔 ${data.economico}</div>` : ''}
-                    ${data.montacarguista ? `<div class="dock-operador" title="${data.montacarguista}">🚜 ${data.montacarguista}</div>` : ''}
-                    ${data.comentarios ? `<div class="dock-obs" title="${data.comentarios}">${data.comentarios}</div>` : ''}
+                    ${linea ? `<div class="dock-linea" title="${linea}">🚛 ${linea}</div>` : ''}
+                    ${economico ? `<div class="dock-eco">🆔 ${economico}</div>` : ''}
+                    ${montacarguista ? `<div class="dock-operador" title="${montacarguista}">🚜 ${montacarguista}</div>` : ''}
+                    ${comentarios ? `<div class="dock-obs" title="${comentarios}">${comentarios}</div>` : ''}
                 </div>
                 <div class="dock-footer">
-                    <div class="dock-tipo">${data.tipoViaje && data.tipoViaje !== 'N/A' ? data.tipoViaje : ''}</div>
+                    <div class="dock-tipo">${tipoViaje && tipoViaje !== 'N/A' ? tipoViaje : ''}</div>
                 </div>
             `;
 
@@ -817,13 +850,16 @@
 
         function abrirModal(num, data) {
             currentAndenEdit = num;
+            const esLibre = (data.estado || "LIBRE").toUpperCase() === "LIBRE";
+
             document.getElementById('modalTitle').innerText = `Editar Andén ${num} (${bodegaActual.nombre})`;
             document.getElementById('editEstado').value = (data.estado || "LIBRE").toUpperCase();
-            document.getElementById('editTipoViaje').value = (data.tipoViaje || "N/A").toUpperCase();
-            document.getElementById('editLinea').value = data.linea || "";
-            document.getElementById('editEconomico').value = data.economico || "";
-            document.getElementById('editMontacarguista').value = data.montacarguista || "";
-            document.getElementById('editComentarios').value = data.comentarios || "";
+            document.getElementById('editTipoViaje').value = esLibre ? "N/A" : (data.tipoViaje || "N/A").toUpperCase();
+            document.getElementById('editLinea').value = esLibre ? "" : (data.linea || "");
+            document.getElementById('editEconomico').value = esLibre ? "" : (data.economico || "");
+            document.getElementById('editMontacarguista').value = esLibre ? "" : (data.montacarguista || "");
+            document.getElementById('editNumeroMontacargas').value = esLibre ? "" : (data.numeroMontacargas || "");
+            document.getElementById('editComentarios').value = esLibre ? "" : (data.comentarios || "");
             document.getElementById('modalEdit').classList.add('active');
         }
 
@@ -837,31 +873,30 @@
 
             const numStr = currentAndenEdit.toString();
             const nuevoEstado = document.getElementById('editEstado').value;
-            const esLibre = nuevoEstado === "LIBRE";
-
-            const rutaNodo = bodegaActual.clave === 'ROJA' ? `/${numStr}` : `/NARANJA/${numStr}`;
-            const andenRef = ref(rtdb, rutaNodo);
+            const esLibre = (nuevoEstado === "LIBRE");
 
             const updatedData = {
-                id: `ANDEN ${numStr}`,
+                id: numStr,
                 numero: numStr,
                 estado: nuevoEstado,
                 tipoViaje: esLibre ? "N/A" : document.getElementById('editTipoViaje').value,
                 linea: esLibre ? "" : document.getElementById('editLinea').value.trim(),
                 economico: esLibre ? "" : document.getElementById('editEconomico').value.trim(),
                 montacarguista: esLibre ? "" : document.getElementById('editMontacarguista').value.trim(),
+                numeroMontacargas: esLibre ? "" : document.getElementById('editNumeroMontacargas').value.trim(),
                 comentarios: esLibre ? "" : document.getElementById('editComentarios').value.trim()
             };
 
             try {
-                await update(andenRef, updatedData);
+                // Guarda en la ruta estructurada de Realtime Database de Android Studio
+                await set(ref(db, `bodegas/${bodegaActual.clave}/andenes/${numStr}`), updatedData);
                 cerrarModal();
             } catch (err) {
-                alert("Error al actualizar Realtime Database: " + err.message);
+                alert("Error al guardar en Realtime Database: " + err.message);
             }
         };
 
-        conectarRTDB();
+        conectarRealtimeDB();
     </script>
 </body>
 </html>
