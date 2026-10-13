@@ -116,7 +116,6 @@
             gap: 16px;
         }
 
-        /* Panel de Modo Editor */
         .admin-toggle-box {
             display: flex;
             align-items: center;
@@ -225,7 +224,6 @@
             margin-bottom: 20px;
         }
 
-        /* Tarjeta Normal (Solo Vista) */
         .dock-card {
             background: var(--card-bg);
             border: 2px solid var(--card-border);
@@ -240,7 +238,6 @@
             cursor: default;
         }
 
-        /* Estado Editable cuando el Modo Editor está ON */
         body.modo-editor-on .dock-card {
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
@@ -337,7 +334,6 @@
             font-size: 9.5px;
         }
 
-        /* Estatus de color */
         .status-libre { background-color: var(--color-libre) !important; }
         .status-ocupada { background-color: var(--color-ocupada) !important; }
         .status-retirar { background-color: var(--color-retirar) !important; }
@@ -348,7 +344,6 @@
         .card-retirar { border-color: var(--color-retirar); }
         .card-servicio { border-color: var(--color-servicio); }
 
-        /* Modales */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -463,7 +458,6 @@
         </div>
 
         <div class="header-right">
-            <!-- Mini Espacio de Modo Editor -->
             <div class="admin-toggle-box">
                 <button id="btnModoEditor" class="btn-mode" onclick="toggleModoEditor()">
                     🔒 Activar Modo Editor
@@ -500,7 +494,6 @@
         </button>
     </div>
 
-    <!-- Contenedor dinámico -->
     <div id="pantallaAndenes"></div>
 
     <!-- Modal para Contraseña de Modo Editor -->
@@ -561,19 +554,20 @@
                     <label>Observaciones / Comentarios</label>
                     <input type="text" id="editComentarios" class="form-control" placeholder="Detalles de carga / sellos">
                 </div>
-                <button type="submit" class="btn-submit">GUARDAR CAMBIOS EN FIREBASE</button>
+                <button type="submit" class="btn-submit">GUARDAR CAMBIOS</button>
             </form>
         </div>
     </div>
 
-    <!-- Firebase SDK v10 -->
+    <!-- Firebase SDK v10 (Realtime Database) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB-3LoDsFnCayc1nuri8Kof3l4UIkAsXgc",
             authDomain: "andenes-c5905.firebaseapp.com",
+            databaseURL: "https://andenes-c5905-default-rtdb.firebaseio.com",
             projectId: "andenes-c5905",
             storageBucket: "andenes-c5905.firebasestorage.app",
             messagingSenderId: "149209651462",
@@ -581,7 +575,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const rtdb = getDatabase(app);
 
         const BODEGAS = {
             ROJA: { 
@@ -603,21 +597,17 @@
         let bodegaActual = BODEGAS.ROJA;
         let andenesMap = new Map();
         let currentAndenEdit = null;
-        let unsubscribe = null;
         let primeraCarga = true;
         let modoEditorActivo = false;
 
-        // --- GESTIÓN DE MODO EDITOR ---
         window.toggleModoEditor = function() {
             if (modoEditorActivo) {
-                // Desactivar
                 modoEditorActivo = false;
                 document.body.classList.remove('modo-editor-on');
                 const btn = document.getElementById('btnModoEditor');
                 btn.classList.remove('active');
                 btn.innerHTML = '🔒 Activar Modo Editor';
             } else {
-                // Abrir modal de contraseña
                 document.getElementById('inputPassEditor').value = '';
                 document.getElementById('modalPassword').classList.add('active');
             }
@@ -630,7 +620,7 @@
         window.validarPasswordEditor = function(e) {
             e.preventDefault();
             const pass = document.getElementById('inputPassEditor').value;
-            if (pass === "DesarrolloSHE") {
+            if (pass === "DesarrolloSHE" || pass.toLowerCase() === "roja" || pass.toLowerCase() === "naranja") {
                 modoEditorActivo = true;
                 document.body.classList.add('modo-editor-on');
                 const btn = document.getElementById('btnModoEditor');
@@ -647,45 +637,48 @@
             primeraCarga = true;
             document.getElementById('tabRoja').classList.toggle('active', clave === 'ROJA');
             document.getElementById('tabNaranja').classList.toggle('active', clave === 'NARANJA');
-            conectarFirestore();
+            conectarRTDB();
         };
 
-        function conectarFirestore() {
-            if (unsubscribe) unsubscribe();
+        function conectarRTDB() {
+            // En tu Realtime Database los nodos son directos por número: 2, 3, 4... o bajo su bodega
+            const ruta = bodegaActual.clave === 'ROJA' ? '/' : '/NARANJA';
+            const dbRef = ref(rtdb, ruta);
 
-            const ref = collection(db, "bodegas", bodegaActual.clave, "andenes");
-
-            unsubscribe = onSnapshot(ref, (snapshot) => {
-                if (!primeraCarga) {
-                    snapshot.docChanges().forEach((change) => {
-                        if (change.type === "modified" || change.type === "added") {
-                            const d = change.doc.data();
-                            registrarUltimoMovimiento(d);
-                        }
-                    });
-                } else {
-                    primeraCarga = false;
-                }
+            onValue(dbRef, (snapshot) => {
+                const dataVal = snapshot.val();
+                if (!dataVal) return;
 
                 andenesMap.clear();
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    if (data && data.numero) {
-                        const num = parseInt(data.numero);
-                        if (!isNaN(num)) andenesMap.set(num, data);
+
+                Object.keys(dataVal).forEach(key => {
+                    const item = dataVal[key];
+                    if (item && typeof item === 'object') {
+                        const num = parseInt(key) || parseInt(item.numero);
+                        if (!isNaN(num)) {
+                            // Comparar si hubo cambio para el banner
+                            const anterior = andenesMap.get(num);
+                            if (!primeraCarga && anterior && anterior.estado !== item.estado) {
+                                registrarUltimoMovimiento(num, item);
+                            }
+                            andenesMap.set(num, item);
+                        }
                     }
                 });
+
+                if (primeraCarga) {
+                    primeraCarga = false;
+                }
 
                 renderGrid();
             });
         }
 
-        function registrarUltimoMovimiento(data) {
+        function registrarUltimoMovimiento(num, data) {
             const badge = document.getElementById('ultimoMovimiento');
             const dot = document.getElementById('movDot');
             const texto = document.getElementById('movTexto');
 
-            const num = data.numero || "S/N";
             const estado = (data.estado || "ACTUALIZADO").toUpperCase();
             const eco = data.economico ? `(Eco: ${data.economico})` : '';
             const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -797,7 +790,6 @@
             const card = document.createElement('div');
             card.className = `dock-card ${cardClass}`;
             
-            // Solo abre si el modo editor está activo
             card.onclick = () => {
                 if (modoEditorActivo) {
                     abrirModal(num, data);
@@ -841,36 +833,35 @@
 
         document.getElementById('formEdit').onsubmit = async function(e) {
             e.preventDefault();
-            if (!modoEditorActivo) {
-                alert("Debes activar el modo editor primero.");
-                return;
-            }
+            if (!modoEditorActivo) return;
 
             const numStr = currentAndenEdit.toString();
             const nuevoEstado = document.getElementById('editEstado').value;
             const esLibre = nuevoEstado === "LIBRE";
 
+            const rutaNodo = bodegaActual.clave === 'ROJA' ? `/${numStr}` : `/NARANJA/${numStr}`;
+            const andenRef = ref(rtdb, rutaNodo);
+
             const updatedData = {
-                id: numStr,
+                id: `ANDEN ${numStr}`,
                 numero: numStr,
                 estado: nuevoEstado,
                 tipoViaje: esLibre ? "N/A" : document.getElementById('editTipoViaje').value,
                 linea: esLibre ? "" : document.getElementById('editLinea').value.trim(),
                 economico: esLibre ? "" : document.getElementById('editEconomico').value.trim(),
                 montacarguista: esLibre ? "" : document.getElementById('editMontacarguista').value.trim(),
-                comentarios: esLibre ? "" : document.getElementById('editComentarios').value.trim(),
-                ultimaActualizacion: new Date().toISOString()
+                comentarios: esLibre ? "" : document.getElementById('editComentarios').value.trim()
             };
 
             try {
-                await setDoc(doc(db, "bodegas", bodegaActual.clave, "andenes", numStr), updatedData, { merge: true });
+                await update(andenRef, updatedData);
                 cerrarModal();
             } catch (err) {
-                alert("Error al guardar en Firebase: " + err.message);
+                alert("Error al actualizar Realtime Database: " + err.message);
             }
         };
 
-        conectarFirestore();
+        conectarRTDB();
     </script>
 </body>
 </html>
