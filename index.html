@@ -336,7 +336,6 @@
             font-size: 9.5px;
         }
 
-        /* Estatus de color */
         .status-libre { background-color: var(--color-libre) !important; }
         .status-ocupada { background-color: var(--color-ocupada) !important; }
         .status-retirar { background-color: var(--color-retirar) !important; }
@@ -349,7 +348,6 @@
         .card-servicio { border-color: var(--color-servicio); }
         .card-deshabilitada { border-color: #333333; background-color: #121212; opacity: 0.6; }
 
-        /* Modales */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -473,7 +471,7 @@
             <div class="stats-bar">
                 <div class="stat-box">
                     <div class="stat-label">Total</div>
-                    <div class="stat-value" id="statTotal">41</div>
+                    <div class="stat-value" id="statTotal">46</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-label">Libres</div>
@@ -493,7 +491,7 @@
 
     <div class="nav-tabs">
         <button class="tab-btn active" id="tabRoja" onclick="seleccionarBodega('ROJA')">
-            🔴 Bodega Roja (41 Andenes Operativos)
+            🔴 Bodega Roja (46 Andenes Operativos)
         </button>
         <button class="tab-btn" id="tabNaranja" onclick="seleccionarBodega('NARANJA')">
             🟠 Bodega Naranja (30 Andenes)
@@ -570,7 +568,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK v10 (Realtime Database configurada por Android Studio) -->
+    <!-- Firebase SDK v10 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, set, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -592,9 +590,9 @@
             ROJA: { 
                 clave: "ROJA", 
                 nombre: "Bodega Roja", 
-                total: 41, 
+                total: 46, 
                 tieneLados: true,
-                ladoB: [2, 4, 6, 14, 22, 24, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54],
+                ladoB: [2, 4, 6, 8, 10, 14, 16, 18, 20, 22, 24, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54],
                 ladoA: [3, 5, 7, 9, 11, 13, 21, 23, 25, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55]
             },
             NARANJA: { 
@@ -612,7 +610,6 @@
         let modoEditorActivo = false;
         let rtdbRefActual = null;
 
-        // Control de Modo Editor
         window.toggleModoEditor = function() {
             if (modoEditorActivo) {
                 modoEditorActivo = false;
@@ -658,7 +655,6 @@
                 off(rtdbRefActual);
             }
 
-            // Ruta de consulta compatible con la app de Android
             rtdbRefActual = ref(db, `bodegas/${bodegaActual.clave}/andenes`);
 
             onValue(rtdbRefActual, (snapshot) => {
@@ -764,7 +760,6 @@
                 container.appendChild(grid);
             }
 
-            // Conteo exacto solo sobre los andenes operativos
             listaAndenesActivos.forEach(num => {
                 const data = andenesMap.get(num) || { estado: 'LIBRE' };
                 const st = (data.estado || 'LIBRE').toUpperCase();
@@ -888,7 +883,6 @@
             };
 
             try {
-                // Guarda en la ruta estructurada de Realtime Database de Android Studio
                 await set(ref(db, `bodegas/${bodegaActual.clave}/andenes/${numStr}`), updatedData);
                 cerrarModal();
             } catch (err) {
