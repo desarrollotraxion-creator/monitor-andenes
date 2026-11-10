@@ -3,49 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRAXIÓN - Monitor de Andenes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <title>TRAXIÓN - Monitor de Andenes | TSE-09-SIGEO-PR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* TSE-09-SIGEO-PR: Paleta Institucional Oficial y Estatus (CÓDIGOS HEX) */
         :root {
-            --bg-dark: #0b0d13;
-            --card-bg: #141722;
-            --card-border: #232838;
-            --accent-yellow: #ffb703;
-            --color-libre: #2e7d32;
-            --color-ocupada: #d84315;
-            --color-retirar: #0288d1;
-            --color-servicio: #c62828;
-            --color-deshabilitada: #212121;
-            --text-main: #f0f2f5;
-            --text-muted: #8c93a8;
+            /* Colores Base y Estructura */
+            --header-dark: #182237;
+            --header-dark-deep: #100848;
+            --bg-layout: #F4F6F8;
+            --card-bg: #FFFFFF;
+            --border-soft: #E5E7EB;
+            --border-card: #D1D5DB;
+            --text-main: #1D2939;
+            --text-muted: #6B7280;
+            
+            /* Acento Institucional Traxión */
+            --accent-lime: #C0D838;
+            --accent-lime-hover: #cbd51b;
+            --accent-lime-bright: #D0E934;
+            
+            /* Estatus y Semaforización Oficial */
+            --status-green-txt: #037A48;
+            --status-green-bg: #ECFDF3;
+            --status-green-border: #A6F4C5;
+
+            --status-orange-txt: #E07A00;
+            --status-orange-bg: #FFF4E5;
+            --status-orange-border: #FFD699;
+
+            --status-blue-txt: #0070C0;
+            --status-blue-bg: #EFF8FF;
+            --status-blue-border: #B2DDFF;
+
+            --status-red-txt: #D92D20;
+            --status-red-bg: #FEE4E2;
+            --status-red-border: #FECDCA;
+
+            --status-gray-txt: #475467;
+            --status-gray-bg: #F2F4F7;
+            --status-gray-border: #D0D5DD;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             user-select: none;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-layout);
             color: var(--text-main);
             min-height: 100vh;
-            padding: 16px 20px;
+            padding: 16px 20px 30px 20px;
         }
 
+        /* 5.3 Header Institucional Oficial #182237 */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            background: linear-gradient(135deg, var(--header-dark) 0%, var(--header-dark-deep) 100%);
+            border-bottom: 4px solid var(--accent-lime);
             padding: 14px 24px;
-            border-radius: 12px;
+            border-radius: 10px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 16px rgba(16, 8, 72, 0.15);
             gap: 16px;
+            flex-wrap: wrap;
+            color: #FFFFFF;
         }
 
         .brand-container {
@@ -54,19 +82,24 @@
             gap: 16px;
         }
 
+        .logo-box {
+            display: flex;
+            flex-direction: column;
+        }
+
         .logo-title {
             font-size: 24px;
             font-weight: 900;
-            letter-spacing: 2px;
-            color: #ffffff;
-            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #FFFFFF;
+            line-height: 1.1;
         }
 
         .logo-sub {
             font-size: 10px;
-            color: var(--accent-yellow);
+            color: var(--accent-lime);
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
 
         .header-center {
@@ -78,29 +111,50 @@
         }
 
         .header-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #ffffff;
+            font-size: 22px;
+            font-weight: 900;
+            color: #FFFFFF;
             letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
+        .header-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .doc-code-pill {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(192, 216, 56, 0.4);
+            color: var(--accent-lime-bright);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* 5.1 Subtítulo / Metadatos (Fecha/Hora) 12px-13px Regular/Medium */
         .ultimo-movimiento-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #1b2030;
-            border: 1px solid #2d354d;
-            padding: 5px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
-            color: #e2e8f0;
+            color: #E5E7EB;
             transition: all 0.3s ease;
         }
 
         .ultimo-movimiento-badge.pulse {
-            border-color: var(--accent-yellow);
-            box-shadow: 0 0 12px rgba(255, 183, 3, 0.4);
+            border-color: var(--accent-lime);
+            box-shadow: 0 0 12px rgba(192, 216, 56, 0.5);
             transform: scale(1.02);
         }
 
@@ -108,7 +162,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #4caf50;
+            background-color: var(--accent-lime);
             display: inline-block;
         }
 
@@ -116,162 +170,312 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            flex-wrap: wrap;
         }
 
         .admin-toggle-box {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: #1b1f2e;
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--card-border);
         }
 
         .btn-mode {
-            background: #252b3d;
-            border: 1px solid #3b4259;
-            color: #fff;
-            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #FFFFFF;
+            padding: 8px 14px;
             border-radius: 6px;
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 6px;
+            text-transform: uppercase;
         }
 
         .btn-mode:hover {
-            border-color: var(--accent-yellow);
+            border-color: var(--accent-lime);
+            background: rgba(255, 255, 255, 0.18);
         }
 
         .btn-mode.active {
-            background: var(--accent-yellow);
-            color: #000;
-            border-color: var(--accent-yellow);
-            box-shadow: 0 0 10px rgba(255, 183, 3, 0.4);
+            background: var(--accent-lime);
+            color: #100848;
+            border-color: var(--accent-lime);
+            font-weight: 800;
+            box-shadow: 0 0 12px rgba(192, 216, 56, 0.4);
         }
 
+        /* 3.2 Tarjetas KPI (Cards) según Sección 5.1 & 6.3.1 con iconos circulares */
         .stats-bar {
             display: flex;
             gap: 10px;
         }
 
         .stat-box {
-            background: #1b1f2e;
-            padding: 6px 14px;
+            background: var(--card-bg);
+            padding: 8px 14px;
             border-radius: 8px;
-            border: 1px solid var(--card-border);
+            border: 2px solid var(--border-soft);
             text-align: center;
-            min-width: 70px;
+            min-width: 95px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tarjetas estáticas: solo métricas informativas sin cursor pointer ni elevación */
+        .stat-box.stat-static {
+            cursor: default !important;
+            user-select: none;
+        }
+
+        .stat-box.stat-static:hover {
+            transform: none !important;
+            border-color: var(--border-soft) !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
+        }
+
+        .stat-box:not(.stat-static):hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-lime);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .stat-box.filter-active {
+            border-color: var(--header-dark);
+            box-shadow: 0 0 0 3px rgba(192, 216, 56, 0.5);
+            background: #F8FAFC;
+        }
+
+        .stat-icon-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            margin-bottom: 2px;
         }
 
         .stat-label {
-            font-size: 9px;
+            font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
+        /* 5.1 Números de Métricas Principales (KPIs): 28px-32px Bold */
         .stat-value {
-            font-size: 18px;
-            font-weight: 900;
-            color: #fff;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 4px;
+            line-height: 1.1;
         }
 
+        .stat-subtext {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Barra de aviso de filtro interactivo */
+        .filter-status-banner {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            background: #FFFFFF;
+            border: 1px solid var(--accent-lime);
+            border-left: 5px solid var(--accent-lime);
+            border-radius: 6px;
+            padding: 9px 18px;
+            margin-bottom: 14px;
+            font-size: 12px;
+            color: var(--text-main);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .filter-status-banner.visible {
+            display: flex;
+        }
+
+        .btn-clear-filter {
+            background: var(--header-dark);
+            border: none;
+            color: #FFFFFF;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-clear-filter:hover {
+            background: var(--header-dark-deep);
+            color: var(--accent-lime);
+        }
+
+        /* Pestañas de Bodegas */
         .nav-tabs {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 16px;
         }
 
         .tab-btn {
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--border-soft);
             color: var(--text-muted);
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 10px 22px;
+            border-radius: 6px;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-        }
-
-        .tab-btn.active {
-            background: #202638;
-            color: #fff;
-            border-color: var(--accent-yellow);
-            box-shadow: 0 0 14px rgba(255, 183, 3, 0.25);
-        }
-
-        .section-label {
-            width: 100%;
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--accent-yellow);
-            margin: 14px 0 8px 0;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
+        .tab-btn:hover {
+            border-color: var(--border-card);
+            color: var(--text-main);
         }
 
+        .tab-btn.active {
+            background: var(--header-dark);
+            color: #FFFFFF;
+            border-color: var(--header-dark);
+            border-bottom: 3px solid var(--accent-lime);
+            box-shadow: 0 4px 10px rgba(24, 34, 55, 0.15);
+        }
+
+        /* 5.1 Encabezados de Tarjetas y Secciones: 13px-14px Bold Mayúsculas */
+        .section-label {
+            width: 100%;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--header-dark);
+            margin: 16px 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--border-soft);
+            position: relative;
+        }
+
+        .section-label::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background: var(--accent-lime);
+        }
+
+        .section-tag {
+            background: var(--accent-lime);
+            color: var(--header-dark);
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+
+        /* Grilla de Andenes */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        /* Tarjeta de Andén Operativo */
         .dock-card {
             background: var(--card-bg);
-            border: 2px solid var(--card-border);
+            border: 1px solid var(--border-soft);
+            border-top: 3px solid var(--border-card);
             border-radius: 8px;
-            padding: 8px;
-            min-height: 145px;
+            padding: 9px;
+            min-height: 148px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
             cursor: default;
+            transition: all 0.2s ease;
+        }
+
+        .dock-card.dimmed {
+            opacity: 0.18 !important;
+            filter: grayscale(80%);
+            transform: scale(0.96);
+        }
+
+        .dock-card.highlighted {
+            transform: scale(1.03);
+            z-index: 10;
+            box-shadow: 0 0 16px rgba(192, 216, 56, 0.6) !important;
+            border-color: var(--accent-lime) !important;
+            animation: pulseCard 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulseCard {
+            0% { transform: scale(1.02); }
+            50% { transform: scale(1.045); }
+            100% { transform: scale(1.02); }
         }
 
         body.modo-editor-on .dock-card {
             cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
         }
 
         body.modo-editor-on .dock-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
-            border-color: var(--accent-yellow) !important;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 16px rgba(16, 8, 72, 0.12);
+            border-color: var(--accent-lime) !important;
         }
 
         .dock-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-soft);
+            padding-bottom: 6px;
         }
 
         .dock-num {
-            font-size: 14px;
-            font-weight: 900;
-            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--header-dark);
         }
 
+        /* 5.1 Badges / Textos de Estatus: 10px-11px Bold */
         .dock-status-pill {
-            font-size: 8px;
+            font-size: 10px;
             font-weight: 800;
-            padding: 2px 5px;
+            padding: 2px 6px;
             border-radius: 4px;
             text-transform: uppercase;
-            color: #fff;
             white-space: nowrap;
         }
 
@@ -287,7 +491,7 @@
 
         .dock-linea {
             font-weight: 700;
-            color: #ffffff;
+            color: var(--header-dark);
             font-size: 11px;
             line-height: 1.2;
             white-space: nowrap;
@@ -297,7 +501,7 @@
 
         .dock-eco {
             font-size: 11px;
-            color: var(--accent-yellow);
+            color: var(--header-dark-deep);
             font-weight: 800;
             white-space: nowrap;
             overflow: hidden;
@@ -305,26 +509,27 @@
         }
 
         .dock-operador {
-            font-size: 9.5px;
-            color: #b0b7c9;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .dock-obs {
-            font-size: 9px;
+            font-size: 10px;
             color: var(--text-muted);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
+        .dock-obs {
+            font-size: 9.5px;
+            color: #9CA3AF;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-style: italic;
+        }
+
         .dock-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.08);
+            border-top: 1px solid var(--border-soft);
             padding-top: 4px;
             font-size: 10px;
             min-height: 18px;
@@ -332,29 +537,88 @@
 
         .dock-tipo {
             font-weight: 800;
-            color: var(--accent-yellow);
-            font-size: 9.5px;
+            color: var(--header-dark);
+            font-size: 10px;
+            background: #F2F4F7;
+            padding: 1px 5px;
+            border-radius: 3px;
         }
 
-        .status-libre { background-color: var(--color-libre) !important; }
-        .status-ocupada { background-color: var(--color-ocupada) !important; }
-        .status-retirar { background-color: var(--color-retirar) !important; }
-        .status-servicio { background-color: var(--color-servicio) !important; }
-        .status-deshabilitada { background-color: var(--color-deshabilitada) !important; color: #888; }
+        /* Clases condicionales conforme a Paleta de Estatus TSE-09-SIGEO-PR (Sección 5.3) */
+        .status-libre { 
+            background-color: var(--status-green-bg); 
+            color: var(--status-green-txt); 
+            border: 1px solid var(--status-green-border);
+        }
+        .card-libre { border-top-color: var(--status-green-txt); }
 
-        .card-libre { border-color: rgba(46, 125, 50, 0.5); }
-        .card-ocupada { border-color: var(--color-ocupada); }
-        .card-retirar { border-color: var(--color-retirar); }
-        .card-servicio { border-color: var(--color-servicio); }
-        .card-deshabilitada { border-color: #333333; background-color: #121212; opacity: 0.6; }
+        .status-ocupada { 
+            background-color: var(--status-orange-bg); 
+            color: var(--status-orange-txt); 
+            border: 1px solid var(--status-orange-border);
+        }
+        .card-ocupada { border-top-color: var(--status-orange-txt); }
 
+        .status-retirar { 
+            background-color: var(--status-blue-bg); 
+            color: var(--status-blue-txt); 
+            border: 1px solid var(--status-blue-border);
+        }
+        .card-retirar { border-top-color: var(--status-blue-txt); }
+
+        .status-servicio { 
+            background-color: var(--status-red-bg); 
+            color: var(--status-red-txt); 
+            border: 1px solid var(--status-red-border);
+        }
+        .card-servicio { border-top-color: var(--status-red-txt); }
+
+        .status-deshabilitada { 
+            background-color: var(--status-gray-bg); 
+            color: var(--status-gray-txt); 
+            border: 1px solid var(--status-gray-border);
+        }
+        .card-deshabilitada { 
+            border-top-color: var(--status-gray-txt); 
+            background-color: #FAFAFA; 
+            opacity: 0.75; 
+        }
+
+        /* Pie de página normativo confidencial (Pág 2 & 9 del documento) */
+        footer.normativa-footer {
+            margin-top: 32px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-soft);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-legal {
+            max-width: 780px;
+            line-height: 1.4;
+        }
+
+        .footer-source {
+            font-weight: 700;
+            color: var(--header-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Modales */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0,0,0,0.85);
+            background: rgba(16, 8, 72, 0.65);
             backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
@@ -367,13 +631,13 @@
         }
 
         .modal-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
+            background: #FFFFFF;
+            border-top: 4px solid var(--accent-lime);
+            border-radius: 10px;
             width: 440px;
             max-width: 92vw;
             padding: 24px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.7);
+            box-shadow: 0 16px 36px rgba(16, 8, 72, 0.25);
         }
 
         .modal-header {
@@ -386,15 +650,17 @@
         .modal-title {
             font-size: 17px;
             font-weight: 800;
-            color: #fff;
+            color: var(--header-dark);
+            text-transform: uppercase;
         }
 
         .close-btn {
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 22px;
+            font-size: 24px;
             cursor: pointer;
+            line-height: 1;
         }
 
         .form-group {
@@ -408,27 +674,31 @@
             margin-bottom: 4px;
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-control {
             width: 100%;
-            background: #1b1f2e;
-            border: 1px solid var(--card-border);
-            color: #fff;
+            background: #F9FAFB;
+            border: 1px solid var(--border-soft);
+            color: var(--text-main);
             padding: 9px 12px;
             border-radius: 6px;
             font-size: 13px;
+            font-weight: 600;
             outline: none;
+            transition: border-color 0.2s;
         }
 
         .form-control:focus {
-            border-color: var(--accent-yellow);
+            border-color: var(--header-dark);
+            background: #FFFFFF;
         }
 
         .btn-submit {
             width: 100%;
-            background: var(--accent-yellow);
-            color: #000;
+            background: var(--header-dark);
+            color: var(--accent-lime);
             border: none;
             padding: 12px;
             border-radius: 6px;
@@ -436,10 +706,29 @@
             font-size: 13px;
             cursor: pointer;
             margin-top: 8px;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
         }
 
         .btn-submit:hover {
-            opacity: 0.9;
+            background: var(--header-dark-deep);
+            color: #FFFFFF;
+        }
+
+        .toast-notify {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--header-dark);
+            color: #FFFFFF;
+            border-left: 4px solid var(--accent-lime);
+            border-radius: 6px;
+            padding: 12px 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 2000;
+            font-size: 13px;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -447,43 +736,79 @@
 
     <header>
         <div class="brand-container">
-            <div>
-                <div class="logo-title">TRAXIÓN</div>
+            <!-- 7. DISEÑO DE LOGOS AUTORIZADOS (TRAXION VIDA EN MOVIMIENTO) -->
+            <div class="logo-box">
+                <div class="logo-title">TRAXION</div>
                 <div class="logo-sub">VIDA EN MOVIMIENTO</div>
             </div>
         </div>
 
         <div class="header-center">
             <div class="header-title">Monitor de Andenes</div>
-            <div id="ultimoMovimiento" class="ultimo-movimiento-badge">
-                <span class="mov-dot" id="movDot"></span>
-                <span id="movTexto">Esperando movimientos...</span>
+            <div class="header-meta-row">
+                <span class="doc-code-pill">DOC: TSE-09-SIGEO-PR</span>
+                <div id="ultimoMovimiento" class="ultimo-movimiento-badge">
+                    <span class="mov-dot" id="movDot"></span>
+                    <span id="movTexto">Cargando último movimiento...</span>
+                </div>
             </div>
         </div>
 
         <div class="header-right">
             <div class="admin-toggle-box">
                 <button id="btnModoEditor" class="btn-mode" onclick="toggleModoEditor()">
-                    🔒 Activar Modo Editor
+                    🔒 Modo Editor
                 </button>
             </div>
 
+            <!-- 5.3 y 6.2 Tarjetas KPI con Iconografía circular recomendada -->
             <div class="stats-bar">
-                <div class="stat-box">
+                <!-- 1. Total (Estática) -->
+                <div class="stat-box stat-static" id="boxTotal" title="Total de andenes instalados en la bodega">
+                    <div class="stat-icon-circle" style="background: #F2F4F7; color: var(--header-dark);">📊</div>
                     <div class="stat-label">Total</div>
                     <div class="stat-value" id="statTotal">41</div>
                 </div>
-                <div class="stat-box">
+
+                <!-- 2. % Operativo (Estática) -->
+                <div class="stat-box stat-static" id="boxPctOperativo" title="Porcentaje Operativo (Libres + En Uso vs Capacidad Total)">
+                    <div class="stat-icon-circle" style="background: rgba(192, 216, 56, 0.25); color: #182237;">📈</div>
+                    <div class="stat-label">% Operativo</div>
+                    <div class="stat-value" style="color: var(--header-dark);">
+                        <span id="statPctOperativo">0%</span>
+                    </div>
+                </div>
+
+                <!-- 3. % Fuera de Servicio (Estática) -->
+                <div class="stat-box stat-static" id="boxPctServicio" title="Porcentaje Fuera de Servicio vs Total">
+                    <div class="stat-icon-circle" style="background: var(--status-red-bg); color: var(--status-red-txt);">⚠️</div>
+                    <div class="stat-label">% Fuera Serv.</div>
+                    <div class="stat-value" style="color: var(--status-red-txt);">
+                        <span id="statPctInactivo">0%</span>
+                    </div>
+                </div>
+
+                <!-- Tarjetas Interactivas con Filtro / Hover -->
+                <div class="stat-box" id="boxLibres" data-filter="LIBRES" onclick="aplicarFiltro('LIBRES')" onmouseenter="hoverFiltro('LIBRES')" onmouseleave="hoverSalida()" title="Pasa por encima para resaltar andenes Libres">
+                    <div class="stat-icon-circle" style="background: var(--status-green-bg); color: var(--status-green-txt);">⏱️</div>
                     <div class="stat-label">Libres</div>
-                    <div class="stat-value" id="statLibres" style="color: #4caf50;">0</div>
+                    <div class="stat-value">
+                        <span id="statLibres" style="color: var(--status-green-txt);">0</span>
+                    </div>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box" id="boxOcupados" data-filter="OCUPADOS" onclick="aplicarFiltro('OCUPADOS')" onmouseenter="hoverFiltro('OCUPADOS')" onmouseleave="hoverSalida()" title="Pasa por encima para resaltar andenes En Uso">
+                    <div class="stat-icon-circle" style="background: var(--status-orange-bg); color: var(--status-orange-txt);">🚛</div>
                     <div class="stat-label">En Uso</div>
-                    <div class="stat-value" id="statOcupados" style="color: #ff9800;">0</div>
+                    <div class="stat-value">
+                        <span id="statOcupados" style="color: var(--status-orange-txt);">0</span>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">Servicio</div>
-                    <div class="stat-value" id="statServicio" style="color: #f44336;">0</div>
+                <div class="stat-box" id="boxServicio" data-filter="SERVICIO" onclick="aplicarFiltro('SERVICIO')" onmouseenter="hoverFiltro('SERVICIO')" onmouseleave="hoverSalida()" title="Pasa por encima para resaltar andenes Fuera de Servicio">
+                    <div class="stat-icon-circle" style="background: var(--status-red-bg); color: var(--status-red-txt);">🛑</div>
+                    <div class="stat-label">Fuera de Servicio</div>
+                    <div class="stat-value">
+                        <span id="statServicio" style="color: var(--status-red-txt);">0</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -491,25 +816,45 @@
 
     <div class="nav-tabs">
         <button class="tab-btn active" id="tabRoja" onclick="seleccionarBodega('ROJA')">
-            🔴 Bodega Roja (41 Andenes Operativos)
+            <span>🔴</span> Bodega Roja (41 Andenes Operativos)
         </button>
         <button class="tab-btn" id="tabNaranja" onclick="seleccionarBodega('NARANJA')">
-            🟠 Bodega Naranja (30 Andenes)
+            <span>🟠</span> Bodega Naranja (30 Andenes)
         </button>
+    </div>
+
+    <!-- Barra de aviso de filtro activo -->
+    <div id="filterBanner" class="filter-status-banner">
+        <span>🔍 Filtro de consulta activo: <strong id="filterBannerTexto" style="color: var(--header-dark-deep);">Todos</strong></span>
+        <button class="btn-clear-filter" onclick="aplicarFiltro('TODOS')">✕ Restablecer visualización</button>
     </div>
 
     <div id="pantallaAndenes"></div>
 
+    <!-- Pie de página institucional y confidencialidad normativa Traxión -->
+    <footer class="normativa-footer">
+        <div class="footer-legal">
+            <strong>TRAXIÓN Y SUBSIDIARIAS</strong> • Este documento y su contenido corresponden a información operacional para fines internos; su uso no autorizado está prohibido y sancionado conforme al Código de Ética de la Compañía.
+        </div>
+        <div class="footer-source">
+            <span>📡 Fuente:</span>
+            <span>Firebase RTDB & WMS Traxión • Frecuencia: Tiempo Real</span>
+        </div>
+    </footer>
+
+    <!-- Notificación Toast -->
+    <div id="toastNotify" class="toast-notify"></div>
+
     <!-- Modal para Contraseña de Modo Editor -->
     <div class="modal-overlay" id="modalPassword">
-        <div class="modal-card" style="width: 340px;">
+        <div class="modal-card" style="width: 360px;">
             <div class="modal-header">
-                <div class="modal-title">Acceso a Edición</div>
+                <div class="modal-title">Autorización de Edición</div>
                 <button class="close-btn" onclick="cerrarModalPassword()">&times;</button>
             </div>
             <form id="formPassword" onsubmit="validarPasswordEditor(event)">
                 <div class="form-group">
-                    <label>Contraseña de Autorización</label>
+                    <label>Contraseña de Acceso Operativo</label>
                     <input type="password" id="inputPassEditor" class="form-control" placeholder="Ingresa contraseña" autofocus required>
                 </div>
                 <button type="submit" class="btn-submit">DESBLOQUEAR EDICIÓN</button>
@@ -560,10 +905,10 @@
                     <input type="text" id="editNumeroMontacargas" class="form-control" placeholder="Ej: MC-02">
                 </div>
                 <div class="form-group">
-                    <label>Observaciones / Comentarios</label>
+                    <label>Observaciones / Sellos</label>
                     <input type="text" id="editComentarios" class="form-control" placeholder="Detalles de carga / sellos">
                 </div>
-                <button type="submit" id="btnGuardarEdit" class="btn-submit">GUARDAR CAMBIOS EN FIREBASE Y GOOGLE SHEETS</button>
+                <button type="submit" id="btnGuardarEdit" class="btn-submit">GUARDAR CAMBIOS EN SISTEMA</button>
             </form>
         </div>
     </div>
@@ -613,6 +958,18 @@
         let primeraCarga = true;
         let modoEditorActivo = false;
         let rtdbRefActual = null;
+        let rtdbUltimoMovRef = null;
+        let filtroSeleccionado = 'TODOS';
+        let filtroFijo = false;
+
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toastNotify');
+            toast.innerText = mensaje;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
 
         window.toggleModoEditor = function() {
             if (modoEditorActivo) {
@@ -620,7 +977,7 @@
                 document.body.classList.remove('modo-editor-on');
                 const btn = document.getElementById('btnModoEditor');
                 btn.classList.remove('active');
-                btn.innerHTML = '🔒 Activar Modo Editor';
+                btn.innerHTML = '🔒 Modo Editor';
             } else {
                 document.getElementById('inputPassEditor').value = '';
                 document.getElementById('modalPassword').classList.add('active');
@@ -639,10 +996,10 @@
                 document.body.classList.add('modo-editor-on');
                 const btn = document.getElementById('btnModoEditor');
                 btn.classList.add('active');
-                btn.innerHTML = '✏️ Modo Editor Activo (Salir)';
+                btn.innerHTML = '✏️ Modo Editor Activo';
                 cerrarModalPassword();
             } else {
-                alert("Contraseña de administrador incorrecta");
+                alert("Contraseña de autorización incorrecta");
             }
         };
 
@@ -651,13 +1008,117 @@
             primeraCarga = true;
             document.getElementById('tabRoja').classList.toggle('active', clave === 'ROJA');
             document.getElementById('tabNaranja').classList.toggle('active', clave === 'NARANJA');
+            
+            cargarUltimoMovimientoCache(clave);
+            filtroSeleccionado = 'TODOS';
+            filtroFijo = false;
+            actualizarUIFiltro();
             conectarRealtimeDB();
         };
+
+        function cargarUltimoMovimientoCache(clave) {
+            const cached = localStorage.getItem(`ultimoMov_${clave}`);
+            if (cached) {
+                try {
+                    const parsed = JSON.parse(cached);
+                    renderizarBadgeMovimiento(parsed.num || parsed.numero, parsed, parsed.hora);
+                } catch(e) {}
+            } else {
+                document.getElementById('movTexto').innerHTML = `Sin movimientos recientes registrados`;
+            }
+        }
+
+        window.aplicarFiltro = function(filtro) {
+            if (filtroSeleccionado === filtro && filtroFijo) {
+                filtroSeleccionado = 'TODOS';
+                filtroFijo = false;
+            } else {
+                filtroSeleccionado = filtro;
+                filtroFijo = (filtro !== 'TODOS');
+            }
+            actualizarUIFiltro();
+            aplicarClasesResaltado();
+        };
+
+        window.hoverFiltro = function(filtro) {
+            if (filtroFijo) return; // Si el usuario fijó un filtro con clic, se respeta
+            filtroSeleccionado = filtro;
+            actualizarUIFiltro();
+            aplicarClasesResaltado();
+        };
+
+        window.hoverSalida = function() {
+            if (filtroFijo) return;
+            filtroSeleccionado = 'TODOS';
+            actualizarUIFiltro();
+            aplicarClasesResaltado();
+        };
+
+        function actualizarUIFiltro() {
+            const boxes = ['boxLibres', 'boxOcupados', 'boxServicio'];
+            boxes.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.toggle('filter-active', el.getAttribute('data-filter') === filtroSeleccionado && filtroSeleccionado !== 'TODOS');
+                }
+            });
+
+            const banner = document.getElementById('filterBanner');
+            const texto = document.getElementById('filterBannerTexto');
+
+            if (filtroSeleccionado === 'TODOS') {
+                banner.classList.remove('visible');
+            } else {
+                banner.classList.add('visible');
+                const tipoInteraccion = filtroFijo ? "Fijado con clic" : "Vista previa (hover)";
+                if (filtroSeleccionado === 'LIBRES') {
+                    texto.innerHTML = `<span style="color: var(--status-green-txt);">ANDENES LIBRES OPERATIVOS</span> <small style="color: var(--text-muted); font-weight: normal;">(${tipoInteraccion})</small>`;
+                } else if (filtroSeleccionado === 'OCUPADOS') {
+                    texto.innerHTML = `<span style="color: var(--status-orange-txt);">ANDENES EN OPERACIÓN (OCUPADO / PARA RETIRAR)</span> <small style="color: var(--text-muted); font-weight: normal;">(${tipoInteraccion})</small>`;
+                } else if (filtroSeleccionado === 'SERVICIO') {
+                    texto.innerHTML = `<span style="color: var(--status-red-txt);">ANDENES FUERA DE SERVICIO / DESHABILITADOS</span> <small style="color: var(--text-muted); font-weight: normal;">(${tipoInteraccion})</small>`;
+                }
+            }
+        }
+
+        function aplicarClasesResaltado() {
+            const cards = document.querySelectorAll('.dock-card');
+            cards.forEach(card => {
+                const categoria = card.getAttribute('data-categoria');
+
+                if (filtroSeleccionado === 'TODOS') {
+                    card.classList.remove('dimmed', 'highlighted');
+                } else if (filtroSeleccionado === categoria) {
+                    card.classList.remove('dimmed');
+                    card.classList.add('highlighted');
+                } else {
+                    card.classList.remove('highlighted');
+                    card.classList.add('dimmed');
+                }
+            });
+        }
 
         function conectarRealtimeDB() {
             if (rtdbRefActual) {
                 off(rtdbRefActual);
             }
+            if (rtdbUltimoMovRef) {
+                off(rtdbUltimoMovRef);
+            }
+
+            rtdbUltimoMovRef = ref(db, `bodegas/${bodegaActual.clave}/ultimo_movimiento`);
+            onValue(rtdbUltimoMovRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const mov = snapshot.val();
+                    if (mov && (mov.numero || mov.num)) {
+                        const num = mov.numero || mov.num;
+                        localStorage.setItem(`ultimoMov_${bodegaActual.clave}`, JSON.stringify(mov));
+                        renderizarBadgeMovimiento(num, mov, mov.hora);
+                    }
+                } else {
+                    cargarUltimoMovimientoCache(bodegaActual.clave);
+                }
+            });
 
             rtdbRefActual = ref(db, `bodegas/${bodegaActual.clave}/andenes`);
 
@@ -692,26 +1153,40 @@
             });
         }
 
-        function registrarUltimoMovimiento(num, data) {
-            const badge = document.getElementById('ultimoMovimiento');
+        function renderizarBadgeMovimiento(num, data, horaCustom) {
             const dot = document.getElementById('movDot');
             const texto = document.getElementById('movTexto');
 
             const estado = (data.estado || "ACTUALIZADO").toUpperCase();
             const eco = data.economico ? `(Eco: ${data.economico})` : '';
-            const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const hora = horaCustom || data.hora || new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
             if (estado === "LIBRE") {
-                dot.style.backgroundColor = "#2e7d32";
+                dot.style.backgroundColor = "#037A48";
             } else if (estado === "OCUPADA" || estado === "OCUPADO") {
-                dot.style.backgroundColor = "#d84315";
+                dot.style.backgroundColor = "#E07A00";
             } else if (estado === "PARA RETIRAR") {
-                dot.style.backgroundColor = "#0288d1";
+                dot.style.backgroundColor = "#0070C0";
             } else {
-                dot.style.backgroundColor = "#c62828";
+                dot.style.backgroundColor = "#D92D20";
             }
 
-            texto.innerHTML = `<strong>Último:</strong> Andén ${num} pasó a <strong>${estado}</strong> ${eco} • <span style="color: #94a3b8;">${hora}</span>`;
+            texto.innerHTML = `<strong>Último:</strong> Andén ${num} • <strong>${estado}</strong> ${eco} • <span style="color: #cbd5e1;">${hora}</span>`;
+        }
+
+        function registrarUltimoMovimiento(num, data) {
+            const badge = document.getElementById('ultimoMovimiento');
+            const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            renderizarBadgeMovimiento(num, data, hora);
+
+            localStorage.setItem(`ultimoMov_${bodegaActual.clave}`, JSON.stringify({
+                numero: num,
+                estado: data.estado,
+                economico: data.economico || '',
+                linea: data.linea || '',
+                hora: hora
+            }));
 
             badge.classList.remove('pulse');
             void badge.offsetWidth;
@@ -732,10 +1207,10 @@
             if (bodegaActual.tieneLados) {
                 listaAndenesActivos = [...bodegaActual.ladoB, ...bodegaActual.ladoA];
 
-                // LADO B
+                // LADO B (PAR)
                 const labelB = document.createElement('div');
                 labelB.className = 'section-label';
-                labelB.innerHTML = `LADO B (PAR) • ${bodegaActual.ladoB.length} ANDENES OPERATIVOS`;
+                labelB.innerHTML = `<span>LADO B (PAR)</span> <span class="section-tag">${bodegaActual.ladoB.length} ANDENES</span>`;
                 container.appendChild(labelB);
 
                 const gridB = document.createElement('div');
@@ -743,10 +1218,10 @@
                 bodegaActual.ladoB.forEach(num => gridB.appendChild(createCard(num)));
                 container.appendChild(gridB);
 
-                // LADO A
+                // LADO A (IMPAR)
                 const labelA = document.createElement('div');
                 labelA.className = 'section-label';
-                labelA.innerHTML = `LADO A (IMPAR) • ${bodegaActual.ladoA.length} ANDENES OPERATIVOS`;
+                labelA.innerHTML = `<span>LADO A (IMPAR)</span> <span class="section-tag">${bodegaActual.ladoA.length} ANDENES</span>`;
                 container.appendChild(labelA);
 
                 const gridA = document.createElement('div');
@@ -776,10 +1251,22 @@
                 }
             });
 
+            // Capacidad operativa real: andenes en servicio activo (Libres + En Uso)
+            const countOperativos = countLibres + countOcupados;
+
+            // Porcentajes directos contra el total de andenes instalados
+            const pctOperativo = countTotal > 0 ? ((countOperativos / countTotal) * 100).toFixed(1) : 0;
+            const pctServicio = countTotal > 0 ? ((countServicio / countTotal) * 100).toFixed(1) : 0;
+
             document.getElementById('statTotal').innerText = countTotal;
+            document.getElementById('statPctOperativo').innerText = `${pctOperativo}%`;
+            document.getElementById('statPctInactivo').innerText = `${pctServicio}%`;
+
             document.getElementById('statLibres').innerText = countLibres;
             document.getElementById('statOcupados').innerText = countOcupados;
             document.getElementById('statServicio').innerText = countServicio;
+
+            aplicarClasesResaltado();
         }
 
         function createCard(num) {
@@ -804,23 +1291,30 @@
 
             let statusClass = "status-libre";
             let cardClass = "card-libre";
+            let categoria = "LIBRES";
 
             if (estado === "OCUPADA" || estado === "OCUPADO") {
                 statusClass = "status-ocupada";
                 cardClass = "card-ocupada";
+                categoria = "OCUPADOS";
             } else if (estado === "PARA RETIRAR") {
                 statusClass = "status-retirar";
                 cardClass = "card-retirar";
+                categoria = "OCUPADOS";
             } else if (estado === "FUERA DE SERVICIO") {
                 statusClass = "status-servicio";
                 cardClass = "card-servicio";
+                categoria = "SERVICIO";
             } else if (estado === "DESHABILITADA" || estado === "DESHABILITADO") {
                 statusClass = "status-deshabilitada";
                 cardClass = "card-deshabilitada";
+                categoria = "SERVICIO";
             }
 
             const card = document.createElement('div');
             card.className = `dock-card ${cardClass}`;
+            card.setAttribute('data-num', num);
+            card.setAttribute('data-categoria', categoria);
             
             card.onclick = () => {
                 if (modoEditorActivo) {
@@ -837,10 +1331,10 @@
                     ${linea ? `<div class="dock-linea" title="${linea}">🚛 ${linea}</div>` : ''}
                     ${economico ? `<div class="dock-eco">🆔 ${economico}</div>` : ''}
                     ${montacarguista ? `<div class="dock-operador" title="${montacarguista}">🚜 ${montacarguista}</div>` : ''}
-                    ${comentarios ? `<div class="dock-obs" title="${comentarios}">${comentarios}</div>` : ''}
+                    ${comentarios ? `<div class="dock-obs" title="${comentarios}">📝 ${comentarios}</div>` : ''}
                 </div>
                 <div class="dock-footer">
-                    <div class="dock-tipo">${tipoViaje && tipoViaje !== 'N/A' ? tipoViaje : ''}</div>
+                    <div class="dock-tipo">${tipoViaje && tipoViaje !== 'N/A' ? tipoViaje : '—'}</div>
                 </div>
             `;
 
@@ -875,7 +1369,7 @@
 
             const btnSubmit = document.getElementById('btnGuardarEdit');
             const originalText = btnSubmit.innerText;
-            btnSubmit.innerText = "⏳ GUARDANDO EN FIREBASE Y GOOGLE SHEETS...";
+            btnSubmit.innerText = "⏳ GUARDANDO EN SISTEMA...";
             btnSubmit.disabled = true;
 
             const numStr = currentAndenEdit.toString();
@@ -889,7 +1383,6 @@
             const editNumeroMontacargas = document.getElementById('editNumeroMontacargas').value.trim();
             const editComentarios = document.getElementById('editComentarios').value.trim();
 
-            // --- CANDADO DE SEGURIDAD EN MODO EDITOR (SÓLO PARA ENRAMPES ACTIVOS) ---
             if (!esInactivo) {
                 const camposVacios = [];
                 if (!editLinea) camposVacios.push("Línea de Transporte");
@@ -897,10 +1390,10 @@
                 if (!editEconomico) camposVacios.push("Número Económico");
                 if (!editMontacarguista) camposVacios.push("Montacarguista");
                 if (!editNumeroMontacargas) camposVacios.push("# Montacargas");
-                if (!editComentarios) camposVacios.push("Observaciones");
+                if (!editComentarios) camposVacios.push("Observaciones / Sellos");
 
                 if (camposVacios.length > 0) {
-                    alert("⚠️ CANDADO DE SEGURIDAD:\n\nNo se puede guardar. Todos los siguientes campos son obligatorios para enrampar:\n- " + camposVacios.join("\n- "));
+                    alert("⚠️ LINEAMIENTO DE CONTROL OPERATIVO:\n\nNo se puede guardar. Todos los siguientes campos son obligatorios para enrampar:\n- " + camposVacios.join("\n- "));
                     btnSubmit.innerText = originalText;
                     btnSubmit.disabled = false;
                     return;
@@ -916,21 +1409,37 @@
                 economico: esInactivo ? "" : editEconomico,
                 montacarguista: esInactivo ? "" : editMontacarguista,
                 numeroMontacargas: esInactivo ? "" : editNumeroMontacargas,
-                comentarios: esInactivo ? "" : editComentarios
+                comentarios: esInactivo ? "" : editComentarios,
+                ultimaModificacion: new Date().toISOString()
             };
+
+            const horaActual = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
             try {
                 // 1. Guardar en Firebase Realtime Database
                 await set(ref(db, `bodegas/${bodegaActual.clave}/andenes/${numStr}`), updatedData);
 
-                // 2. Guardar en Cloud Firestore para sincronización instantánea con la App Android
+                // 2. Registrar como último movimiento global
+                const infoUltimoMov = {
+                    numero: numStr,
+                    estado: nuevoEstado,
+                    linea: esInactivo ? "" : editLinea,
+                    economico: esInactivo ? "" : editEconomico,
+                    hora: horaActual,
+                    fecha: new Date().toLocaleDateString('es-MX')
+                };
+                await set(ref(db, `bodegas/${bodegaActual.clave}/ultimo_movimiento`), infoUltimoMov);
+                localStorage.setItem(`ultimoMov_${bodegaActual.clave}`, JSON.stringify(infoUltimoMov));
+                renderizarBadgeMovimiento(numStr, infoUltimoMov, horaActual);
+
+                // 3. Guardar en Cloud Firestore
                 try {
                     await setDoc(doc(firestore, "bodegas", bodegaActual.clave, "andenes", numStr), updatedData, { merge: true });
                 } catch (errFs) {
                     console.warn("Aviso Cloud Firestore:", errFs);
                 }
 
-                // 3. Sincronizar simultáneamente con Google Sheets (Google Apps Script Web API)
+                // 4. Sincronizar simultáneamente con Google Sheets
                 try {
                     const formData = new URLSearchParams();
                     formData.append("numeroCelda", numStr);
@@ -955,6 +1464,7 @@
                 }
 
                 cerrarModal();
+                mostrarToast(`✅ Andén ${numStr} actualizado correctamente.`);
             } catch (err) {
                 alert("Error al guardar en Realtime Database: " + err.message);
             } finally {
@@ -963,6 +1473,7 @@
             }
         };
 
+        cargarUltimoMovimientoCache(bodegaActual.clave);
         conectarRealtimeDB();
     </script>
 </body>
